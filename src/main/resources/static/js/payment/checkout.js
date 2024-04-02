@@ -1,16 +1,16 @@
-      const clientKey = document.getElementById("clientKey").value;
-      const customerKey = document.getElementById("customerKey").value;
-      var amount = document.getElementById("amount").value;
 const button = document.getElementById("payment-button");
       const coupon = document.getElementById("coupon-box");
       const generateRandomString = () =>
         window.btoa(Math.random()).slice(0, 20);
-
+      var amount = document.getElementById("amount").value;
+	  
       // ------  결제위젯 초기화 ------
       // TODO: clientKey는 개발자센터의 결제위젯 연동 키 > 클라이언트 키로 바꾸세요.
       // TODO: 구매자의 고유 아이디를 불러와서 customerKey로 설정하세요. 이메일・전화번호와 같이 유추가 가능한 값은 안전하지 않습니다.
       // @docs https://docs.tosspayments.com/reference/widget-sdk#sdk-설치-및-초기화
-
+      const customerKey = document.getElementById("customerkey").value;
+      const clientKey = document.getElementById("clientkey").value;
+	  console.log(customerKey);
       const paymentWidget = PaymentWidget(clientKey, customerKey); // 회원 결제
       // const paymentWidget = PaymentWidget(clientKey, PaymentWidget.ANONYMOUS); // 비회원 결제
 

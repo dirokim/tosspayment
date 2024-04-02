@@ -18,6 +18,7 @@
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="/css/styles.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://js.tosspayments.com/v1/payment-widget"></script>
     </head>
     <body id="page-top">
@@ -43,7 +44,7 @@
                            <div>
                         	<input type="hidden" name="orderId" value="${odrdeid}" id="odrdeid" readonly="readonly">
                         	<input type="hidden" name="amount" value="${amount}" id="amount" readonly="readonly">
-                        	<input type="hidden" hidden="" name="customerkey" value="${customerkey}" id="customerkey" readonly="readonly">
+                        	<input type="hidden" name="customerkey" value="${customerkey}" id="customerkey" readonly="readonly">
                         	<input type="hidden" name="clientkey" value="${clientkey}" id="clientkey" readonly="readonly">
                         	</div>
             </div>
@@ -172,6 +173,7 @@
                                     <div class="h2">Strawberries</div>
                                     <p class="mb-0">Strawberries are such a tasty snack, especially with a little sugar on top!</p>
                                 </div>
+                               
                             </div>
                             <img class="img-fluid" src="/assets/img/portfolio-3.jpg" alt="..." />
                         </a>
@@ -221,12 +223,13 @@
                 <p class="text-muted small mb-0">Copyright &copy; Your Website 2023</p>
             </div>
         </footer>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <!-- Scroll to Top Button-->
         <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-        <script src="/js/scripts.js"></script>
         <script src="/js/payment/checkout.js"></script>
+        <script src="/js/scripts.js"></script>
     </body>
 </html>
