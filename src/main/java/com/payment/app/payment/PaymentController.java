@@ -42,7 +42,7 @@ public class PaymentController {
         String amount;
         String paymentKey ;
         try {
-            // 클라이언트에서 받은 JSON 요청 바디입니다.
+            // 클라이언트에서 받은 JSON 요청 바디.
             JSONObject requestData = (JSONObject) parser.parse(jsonBody);
             paymentKey = (String) requestData.get("paymentKey"); 
             orderId = (String) requestData.get("orderId");     //주문번호
@@ -55,20 +55,14 @@ public class PaymentController {
         obj.put("amount", amount);
         obj.put("paymentKey", paymentKey);
 
-        // TODO: 개발자센터에 로그인해서 내 결제위젯 연동 키 > 시크릿 키를 입력하세요. 시크릿 키는 외부에 공개되면 안돼요.
-        // @docs https://docs.tosspayments.com/reference/using-api/api-keys
         String widgetSecretKey = secretkey;
 
-        // 토스페이먼츠 API는 시크릿 키를 사용자 ID로 사용하고, 비밀번호는 사용하지 않습니다.
-        // 비밀번호가 없다는 것을 알리기 위해 시크릿 키 뒤에 콜론을 추가합니다.
-        // @docs https://docs.tosspayments.com/reference/using-api/authorization#%EC%9D%B8%EC%A6%9D
+
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] encodedBytes = encoder.encode((widgetSecretKey + ":").getBytes(StandardCharsets.UTF_8));
         String authorizations = "Basic " + new String(encodedBytes);
         
-        // 결제 승인 API를 호출하세요.
-        // 결제를 승인하면 결제수단에서 금액이 차감돼요.
-        // @docs https://docs.tosspayments.com/guides/payment-widget/integration#3-결제-승인하기
+
         URL url = new URL("https://api.tosspayments.com/v1/payments/confirm");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization", authorizations);
@@ -93,13 +87,6 @@ public class PaymentController {
         return ResponseEntity.status(code).body(jsonObject);
     }
 
-    /**
-     * 인증성공처리
-     * @param request
-     * @param model
-     * @return
-     * @throws Exception
-     */
     
     @GetMapping("success")
     public String paymentRequest(HttpServletRequest request, Model model) throws Exception {
@@ -123,13 +110,7 @@ public class PaymentController {
         return "/payment/checkout";
     }
 
-    /**
-     * 인증실패처리
-     * @param request
-     * @param model
-     * @return
-     * @throws Exception
-     */
+ 
     @GetMapping("/fail")
     public String failPayment(HttpServletRequest request, Model model) throws Exception {
         String failCode = request.getParameter("code");
