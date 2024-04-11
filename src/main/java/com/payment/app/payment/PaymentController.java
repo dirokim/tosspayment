@@ -1,6 +1,8 @@
 package com.payment.app.payment;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -21,11 +23,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/payment/*")
+@Slf4j
 public class PaymentController {
 	
 	@Value("${payments.secret.key}")
@@ -44,7 +48,7 @@ public class PaymentController {
         try {
             // 클라이언트에서 받은 JSON 요청 바디.
             JSONObject requestData = (JSONObject) parser.parse(jsonBody);
-            paymentKey = (String) requestData.get("paymentKey"); 
+            paymentKey = (String) requestData.get("paymentKey"); //페이먼트 키
             orderId = (String) requestData.get("orderId");     //주문번호
             amount = (String) requestData.get("amount");  	   //금액
         } catch (ParseException e) {
@@ -54,43 +58,39 @@ public class PaymentController {
         obj.put("orderId", orderId);
         obj.put("amount", amount);
         obj.put("paymentKey", paymentKey);
-
         String widgetSecretKey = secretkey;
-
-
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] encodedBytes = encoder.encode((widgetSecretKey + ":").getBytes(StandardCharsets.UTF_8));
         String authorizations = "Basic " + new String(encodedBytes);
-        
-
         URL url = new URL("https://api.tosspayments.com/v1/payments/confirm");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization", authorizations);
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        
-
+        connection.setDoOutput(true);        
         OutputStream outputStream = connection.getOutputStream();
         outputStream.write(obj.toString().getBytes("UTF-8"));
 
         int code = connection.getResponseCode();
-        boolean isSuccess = code == 200;
-
+        boolean isSuccess = code == 200;    //200 성공 
+        System.out.println(code);
         InputStream responseStream = isSuccess ? connection.getInputStream() : connection.getErrorStream();
-
-        // TODO: 결제 성공 및 실패 비즈니스 로직을 구현하세요.
-        Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8);
-        JSONObject jsonObject = (JSONObject) parser.parse(reader);
+        Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8); 	
+        JSONObject	jsonObject = (JSONObject) parser.parse(reader);
+        System.out.println(jsonObject.get("orderId"));
+        System.out.println(jsonObject.get("amount"));
+        System.out.println(jsonObject.get("paymentKey"));
+        System.out.println(jsonObject.get("orderName"));
+        System.out.println(jsonObject.get("requestedAt"));
+        System.out.println(jsonObject.get("approvedAt"));
         responseStream.close();
-        System.out.println(jsonObject);
         return ResponseEntity.status(code).body(jsonObject);
     }
 
     
     @GetMapping("success")
     public String paymentRequest(HttpServletRequest request, Model model) throws Exception {
-        return "success";
+        return "/payment/success";
     }
 
     
@@ -100,13 +100,12 @@ public class PaymentController {
     	Random random = new Random();
     	String customerkey = "00c6c9-842956@"+ random.nextInt(999999);
     	String orderId = request.getParameter("orderId");
+    	System.out.println(orderId);
     	String amount = request.getParameter("amount");
     	model.addAttribute("amount",amount); 
     	model.addAttribute("odrdeid",orderId);
     	model.addAttribute("customerkey","KTdYYwZjUp8sTL9WYhs_d");
-    	System.out.println(customerkey);
     	model.addAttribute("clientkey",clientkey);
-    	System.out.println(clientkey);
         return "/payment/checkout";
     }
 
@@ -115,6 +114,6 @@ public class PaymentController {
     public String failPayment(HttpServletRequest request, Model model) throws Exception {
         String failCode = request.getParameter("code");
         String failMessage = request.getParameter("message");
-        return "fail";
+        return "/payment/fail";
     }
 }
